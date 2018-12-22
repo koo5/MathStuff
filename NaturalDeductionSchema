@@ -73,7 +73,15 @@ G |- γ : Γ
 --------------------
 G, δ : Δ |- R γ δ : Set
 
+examples:
 
+nat a set.
+{?list_type a set. ?list_type elem_type ?a} <= {?a a set}.
+
+in the head there is a triple like "?something a set".
+if there are other tripes, they have to have ?something in them.
+lets call the other vars appearing in them args.
+...
 
 
 INTROS
@@ -90,7 +98,15 @@ G |- R-intro1 p : R γ δ
 G |- R γ δ : Set           G |- p : Δₙ
 ------------------------------------------ introN
 G |- R-introN p : R γ δ
- 
+
+examples:
+
+zero a nat.
+{?x has_succ ?y. ?y a nat} <= {?x a nat}.
+{?l a ?x. ?l is_empty true} <= {?x a list_type}.
+{?l a ?x. ?l first ?f. ?l rest ?r} <= {?x a list_type. ?f a ?item_type. ?x elem_type ?item_type. ?r eq ?x}.
+
+
 
 ELIMINATION
 
