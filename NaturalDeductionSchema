@@ -73,10 +73,58 @@ G |- γ : Γ
 --------------------
 G, δ : Δ |- R γ δ : Set
 
+
+
 examples:
 
-nat a set.
-{?list_type a set. ?list_type elem_type ?a} <= {?a a set}.
+list a data_declaration.
+
+#there must not be two type constructors for one data_declaration:
+query
+{
+	{?list_type instance_of list. ?list_type a set. ?list_type elem_type ?a.} <= {?a a set}.
+	{?list_type instance_of list. ?list_type a set. ?list_type elem_type ?a.} <= {?a a set}.
+} typechecks false.
+
+
+
+#type constructor:
+
+{?list_type instance_of list. ?list_type a set. ?list_type elem_type ?a.} <= {?a a set}.
+
+#data constructors:
+
+{?l a ?list_type. ?l is_empty true} <= {?list_type instance_of list.}.
+{?list a ?list_type. ?list is_empty false. ?list head ?item. ?list rest ?rest} <= {?list_type instance_of list. ?l elem_type ?elem_type. ?elem_type }.
+
+
+
+nat a set.#might be an oversimplification, but will see
+
+:zero :has_succ ?one. 
+?one :has_succ ?two.
+?two :has_succ ?three.
+
+{
+	{?l1 is list_with_one_and_two} <= {
+		?lt instance_of list. ?lt elem_type nat. ?l1 a ?lt. ?l1 head ?one. ?l1 rest ?l2. ?l2 a ?lt. ?l2 head ?two. ?l2 rest ?l3. ?l2 a ?lt. ?l3 is_empty true. 
+	}.
+} typechecks true.
+
+{
+	{?l1 is list_with_one_and_two} <= {
+		?lt instance_of list. ?lt elem_type nat. ?l1 a ?lt. ?l1 head ?one. ?l1 rest ?l2. ?l2 a ?lt. ?l2 head "banana". ?l2 rest ?l3. ?l2 a ?lt. ?l3 is_empty true. 
+	}.
+} typechecks false.
+
+
+
+{?l is list_of_one_two} <= {
+	?lt instance_of list. ?lt elem_type nat. ?l a ?lt. ?l is_empty true. ?l prepended 
+
+
+
+{?vect_type a set. ?vect_type elem_type ?a. ?vect_type len ?len} <= {?a a set. ?len a nat}.
 
 in the head there is a triple like "?something a set".
 if there are other tripes, they have to have ?something in them.
@@ -129,3 +177,42 @@ COMPUTATION
 G |- R-elim (introᵢ α) {δ₁}.c₁ ... {δₙ}.cₙ : C
 ---------------------------------------------------------------- comp
 G |- R-elim (introᵢ α) {δ₁}.c₁ ... {δₙ}.cₙ = c₁[δ₁\α] : C
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+something different:
+kb
+fin.
+query
+{
+:zero a :nat.
+{?x a :nat. ?y :has_succ ?x.} <= {?y a :nat}.
+:zero :has_succ :one. 
+} typechecks false.
+#constant :one cant unify with the existential ?x, otherwise we would have rdf lists made up of rdf:nils all over the place.
+fin.
+
+
+
